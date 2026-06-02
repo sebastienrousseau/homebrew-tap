@@ -13,28 +13,28 @@
 class Stratos < Formula
   desc "Official command-line client for CloudCDN"
   homepage "https://github.com/sebastienrousseau/stratos"
-  version "0.0.13"
+  version "0.0.14"
   license "MIT"
 
   on_macos do
     on_arm do
-      url "https://github.com/sebastienrousseau/stratos/releases/download/v0.0.13/stratos-darwin-arm64"
-      sha256 "157eb638ecb86f7f76ce28ea8d9bc2081f983e060ca67d60ccc3df9220a09d4b"
+      url "https://github.com/sebastienrousseau/stratos/releases/download/v0.0.14/stratos-darwin-arm64"
+      sha256 "656398a8804465ead5554b796e9aa09d66a98d92865344097d8f443abfce8f66"
     end
     on_intel do
-      url "https://github.com/sebastienrousseau/stratos/releases/download/v0.0.13/stratos-darwin-x64"
-      sha256 "3ece773206b8b234c5d7048997e0bd8d0f46eedc398013417a67906460c298d3"
+      url "https://github.com/sebastienrousseau/stratos/releases/download/v0.0.14/stratos-darwin-x64"
+      sha256 "3db0597753d6a12c5a57850018fda22e2d1332f159769e63b24da7bf8212361b"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/sebastienrousseau/stratos/releases/download/v0.0.13/stratos-linux-arm64"
-      sha256 "02ae2441f0287f8927058999cc9107253212ef20eb23b42c76cd3e20506e1d41"
+      url "https://github.com/sebastienrousseau/stratos/releases/download/v0.0.14/stratos-linux-arm64"
+      sha256 "97e1a5a76c6ae35161cf8a6afa19391c777fd02eaf0059575d3feaa123d78605"
     end
     on_intel do
-      url "https://github.com/sebastienrousseau/stratos/releases/download/v0.0.13/stratos-linux-x64"
-      sha256 "beec269a289ce11e4464ca76c98889974fb7f6907919640668c046187483ce18"
+      url "https://github.com/sebastienrousseau/stratos/releases/download/v0.0.14/stratos-linux-x64"
+      sha256 "92a971f05d1deeed0b0811fc3a681e1cdf1ef5d37a746a352645a74f6132d73d"
     end
   end
 
@@ -49,6 +49,6 @@ class Stratos < Formula
   end
 
   test do
-    assert_match "stratos v0.0.13", shell_output("#{bin}/stratos version")
+    assert_match "stratos v0.0.14", shell_output("#{bin}/stratos version")
   end
 end
