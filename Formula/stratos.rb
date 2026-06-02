@@ -13,28 +13,28 @@
 class Stratos < Formula
   desc "Official command-line client for CloudCDN"
   homepage "https://github.com/sebastienrousseau/stratos"
-  version "0.0.7"
+  version "0.0.8"
   license "MIT"
 
   on_macos do
     on_arm do
-      url "https://github.com/sebastienrousseau/stratos/releases/download/v0.0.7/stratos-darwin-arm64"
-      sha256 "3b15d602183c7fec11ca24db0a9aacc16207b08529fe13e78008e054b83225a1"
+      url "https://github.com/sebastienrousseau/stratos/releases/download/v0.0.8/stratos-darwin-arm64"
+      sha256 "e8308ada72675e4b4f190734223a4e492782074d6e64f3f57616385ead24cb16"
     end
     on_intel do
-      url "https://github.com/sebastienrousseau/stratos/releases/download/v0.0.7/stratos-darwin-x64"
-      sha256 "3eb25708e8c2d96f1438a31e35a1bfdd09bb962d497d0a61736b7d3030746d95"
+      url "https://github.com/sebastienrousseau/stratos/releases/download/v0.0.8/stratos-darwin-x64"
+      sha256 "19effb06dfeb305735ae3fe8021df435c427d3b40cfe5352d345d833aac41dbe"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/sebastienrousseau/stratos/releases/download/v0.0.7/stratos-linux-arm64"
-      sha256 "6996e23697941caca60a1bf8355296ed466d30c8f7fb8a800a1437f5afd6e275"
+      url "https://github.com/sebastienrousseau/stratos/releases/download/v0.0.8/stratos-linux-arm64"
+      sha256 "8c4134a29905ba2d7d5f39dd7c5c7402002ac4bc2c0c536afabf79ac7b0da66c"
     end
     on_intel do
-      url "https://github.com/sebastienrousseau/stratos/releases/download/v0.0.7/stratos-linux-x64"
-      sha256 "9916ffc549ecd2b1e670a53e26b76124c06ec0ae3c7b2eb67842bb779cb55fb9"
+      url "https://github.com/sebastienrousseau/stratos/releases/download/v0.0.8/stratos-linux-x64"
+      sha256 "bcc701e1cccb013859852c123259da3d1b5c5740292a7850671dada8b6833420"
     end
   end
 
@@ -49,6 +49,6 @@ class Stratos < Formula
   end
 
   test do
-    assert_match "stratos v0.0.7", shell_output("#{bin}/stratos version")
+    assert_match "stratos v0.0.8", shell_output("#{bin}/stratos version")
   end
 end
