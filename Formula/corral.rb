@@ -5,21 +5,21 @@
 class Corral < Formula
   desc "Automatically clone and organise GitHub repositories by visibility and language."
   homepage "https://github.com/sebastienrousseau/corral"
-  version "0.0.3"
+  version "0.0.4"
   license "GPL-3.0"
 
   on_macos do
     if Hardware::CPU.intel?
-      url "https://github.com/sebastienrousseau/corral/releases/download/v0.0.3/corral_Darwin_x86_64.tar.gz"
-      sha256 "31271db2e6051eb795330e718ea0c24ef457f7cab524362056f7bc10f06a0373"
+      url "https://github.com/sebastienrousseau/corral/releases/download/v0.0.4/corral_Darwin_x86_64.tar.gz"
+      sha256 "dedcc07e84c813561918142bdc8e1d0807f0cba60fd1eb4c905d91f74da21d89"
 
       define_method(:install) do
         bin.install "corral"
       end
     end
     if Hardware::CPU.arm?
-      url "https://github.com/sebastienrousseau/corral/releases/download/v0.0.3/corral_Darwin_arm64.tar.gz"
-      sha256 "d464751d69648eb6c15bcf0e7792bd923bde4e29b01bf2b5a55c204ba5f8d30e"
+      url "https://github.com/sebastienrousseau/corral/releases/download/v0.0.4/corral_Darwin_arm64.tar.gz"
+      sha256 "98bc11ae5c5c0504f306029109a97bbf62aa693cc121a4f6ee1c0f51d23bdb20"
 
       define_method(:install) do
         bin.install "corral"
@@ -29,15 +29,15 @@ class Corral < Formula
 
   on_linux do
     if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
-      url "https://github.com/sebastienrousseau/corral/releases/download/v0.0.3/corral_Linux_x86_64.tar.gz"
-      sha256 "40951b04d72c85c91486065324f55292eed4b962bff77b84a3c247ae244b6d9c"
+      url "https://github.com/sebastienrousseau/corral/releases/download/v0.0.4/corral_Linux_x86_64.tar.gz"
+      sha256 "e48a1c88759229ed754323000fd42c25329d56b9840c5f9b20f6bd69e6f223d5"
       define_method(:install) do
         bin.install "corral"
       end
     end
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      url "https://github.com/sebastienrousseau/corral/releases/download/v0.0.3/corral_Linux_arm64.tar.gz"
-      sha256 "365d9f5a5083d8d40e1614f7f50ea4b98c851ae058e9a5017651df010c7648c7"
+      url "https://github.com/sebastienrousseau/corral/releases/download/v0.0.4/corral_Linux_arm64.tar.gz"
+      sha256 "ce2705575e3380239f586575ad505c82562a2965736878a9f0cfad93bb118d14"
       define_method(:install) do
         bin.install "corral"
       end
