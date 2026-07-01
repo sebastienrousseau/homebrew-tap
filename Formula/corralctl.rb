@@ -5,21 +5,21 @@
 class Corralctl < Formula
   desc "Automatically clone and organise GitHub repositories by visibility and language."
   homepage "https://github.com/sebastienrousseau/corral"
-  version "0.0.11"
+  version "0.0.12"
   license "GPL-3.0"
 
   on_macos do
     if Hardware::CPU.intel?
-      url "https://github.com/sebastienrousseau/corral/releases/download/v0.0.11/corralctl_Darwin_x86_64.tar.gz"
-      sha256 "9f0980c8fde1fd7e63ece9727a02e34a719678deb59f2263d915d81dec90a1b9"
+      url "https://github.com/sebastienrousseau/corral/releases/download/v0.0.12/corralctl_Darwin_x86_64.tar.gz"
+      sha256 "884688155351b22c3496fde2f0640342b9787520b8f1db20d6e68db3556f33ec"
 
       define_method(:install) do
         bin.install "corralctl"
       end
     end
     if Hardware::CPU.arm?
-      url "https://github.com/sebastienrousseau/corral/releases/download/v0.0.11/corralctl_Darwin_arm64.tar.gz"
-      sha256 "a7ecd93eec9f90243b59dee39e8ac1a638976bcf00179fb51fe1df965538a9b2"
+      url "https://github.com/sebastienrousseau/corral/releases/download/v0.0.12/corralctl_Darwin_arm64.tar.gz"
+      sha256 "e3b51371682dad3a006ba1c25c825c0001dcdb7836c1668c2c6f2f1b19693030"
 
       define_method(:install) do
         bin.install "corralctl"
@@ -29,15 +29,15 @@ class Corralctl < Formula
 
   on_linux do
     if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
-      url "https://github.com/sebastienrousseau/corral/releases/download/v0.0.11/corralctl_Linux_x86_64.tar.gz"
-      sha256 "99f711d99027952a40451b3cdd168349e8ff6f2717cc5e942bd554f04646d85d"
+      url "https://github.com/sebastienrousseau/corral/releases/download/v0.0.12/corralctl_Linux_x86_64.tar.gz"
+      sha256 "833f8bb3b4551fb10657d8cceb50597e4088a04dc501dc2d2e886f206280477a"
       define_method(:install) do
         bin.install "corralctl"
       end
     end
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      url "https://github.com/sebastienrousseau/corral/releases/download/v0.0.11/corralctl_Linux_arm64.tar.gz"
-      sha256 "75e12d9bf2215ebf19f44a5cee37555c00c051e9be2cc8b25bc48baa6e993c9e"
+      url "https://github.com/sebastienrousseau/corral/releases/download/v0.0.12/corralctl_Linux_arm64.tar.gz"
+      sha256 "60886b4f60e04cbbc8eb850e980fbaf90a087e7d5bd29a935f83704a986e305c"
       define_method(:install) do
         bin.install "corralctl"
       end
