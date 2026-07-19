@@ -13,8 +13,8 @@
 class Draft < Formula
   desc "Turn research PDFs into grounded Markdown drafts (Claude/Ollama)"
   homepage "https://github.com/sebastienrousseau/draft"
-  license any_of: ["MIT", "Apache-2.0"]
   version "0.0.3"
+  license any_of: ["MIT", "Apache-2.0"]
 
   on_macos do
     on_arm do
