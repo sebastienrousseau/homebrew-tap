@@ -1,0 +1,80 @@
+# SPDX-FileCopyrightText: 2026 Sebastien Rousseau
+# SPDX-License-Identifier: MIT OR Apache-2.0
+name: bump-draft
+
+# Keeps Formula/draft.rb in sync with the latest github.com/sebastienrousseau/draft
+# release. Polls daily (no cross-repo token needed); can also be run on demand or
+# triggered instantly by a repository_dispatch of type "draft-release".
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+  repository_dispatch:
+    types: [draft-release]
+
+permissions:
+  contents: write
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Configure signed commits
+        env:
+          SIGNING_KEY: ${{ secrets.TAP_SIGNING_SSH_KEY }}
+        run: |
+          if [ -z "$SIGNING_KEY" ]; then
+            echo "::error::TAP_SIGNING_SSH_KEY secret is not set — the bumper needs an SSH signing key so its commits verify. See Formula/draft.rb header."
+            exit 1
+          fi
+          printf '%s\n' "$SIGNING_KEY" > "$HOME/.tap_signing_key"
+          chmod 600 "$HOME/.tap_signing_key"
+          git config user.name "Sebastien Rousseau"
+          git config user.email "sebastian.rousseau@gmail.com"
+          git config gpg.format ssh
+          git config user.signingkey "$HOME/.tap_signing_key"
+          git config commit.gpgsign true
+
+      - name: Bump draft formula to the latest release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          repo="sebastienrousseau/draft"
+          tag="$(gh release view --repo "$repo" --json tagName -q .tagName)"
+          ver="${tag#v}"
+          cur="$(sed -n 's/.*version "\([^"]*\)".*/\1/p' Formula/draft.rb | head -1)"
+          if [ "$ver" = "$cur" ]; then
+            echo "Formula/draft.rb is already at $ver — nothing to do."
+            exit 0
+          fi
+          echo "Bumping draft: $cur -> $ver"
+          gh release download "$tag" --repo "$repo" --pattern checksums.txt --dir "$RUNNER_TEMP" --clobber
+          sum() { awk -v f="draft_${ver}_$1.tar.gz" '$2==f{print $1}' "$RUNNER_TEMP/checksums.txt"; }
+          export DA="$(sum darwin_arm64)" DI="$(sum darwin_amd64)" LA="$(sum linux_arm64)" LI="$(sum linux_amd64)"
+          for v in "$DA" "$DI" "$LA" "$LI"; do
+            [ -n "$v" ] || { echo "::error::missing a checksum for $ver"; exit 1; }
+          done
+          VER="$ver" python3 - <<'PY'
+          import os, re
+          ver = os.environ["VER"]
+          shas = {"darwin_arm64": os.environ["DA"], "darwin_amd64": os.environ["DI"],
+                  "linux_arm64": os.environ["LA"], "linux_amd64": os.environ["LI"]}
+          path = "Formula/draft.rb"
+          out, plat = [], None
+          for line in open(path):
+              m = re.search(r"_(darwin_arm64|darwin_amd64|linux_arm64|linux_amd64)\.tar\.gz", line)
+              if m:
+                  plat = m.group(1)
+              if line.lstrip().startswith('version "'):
+                  line = re.sub(r'version "[^"]*"', f'version "{ver}"', line)
+              elif line.lstrip().startswith("sha256 ") and plat:
+                  line = re.sub(r'sha256 "[^"]*"', f'sha256 "{shas[plat]}"', line)
+                  plat = None
+              out.append(line)
+          open(path, "w").writelines(out)
+          PY
+          git commit -am "draft: bump to $ver"
+          git push

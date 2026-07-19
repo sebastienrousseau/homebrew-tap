@@ -4,8 +4,9 @@
 # Homebrew formula for the `draft` CLI from
 # https://github.com/sebastienrousseau/draft
 #
-# On each release, update the `version` line and the four `sha256` lines
-# from the release"s checksums.txt.
+# Kept in sync with the latest draft release by .github/workflows/bump-draft.yml
+# (it rewrites the `version` and `sha256` lines). That workflow needs a
+# TAP_SIGNING_SSH_KEY repository secret so its commits are signed.
 #
 # Verify locally with:
 #   brew install --build-from-source draft.rb && draft --version
