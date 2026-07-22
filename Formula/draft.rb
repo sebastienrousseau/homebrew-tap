@@ -14,28 +14,28 @@
 class Draft < Formula
   desc "Turn research PDFs into grounded Markdown drafts (Claude/Ollama)"
   homepage "https://github.com/sebastienrousseau/draft"
-  version "0.0.14"
+  version "0.0.15"
   license any_of: ["MIT", "Apache-2.0"]
 
   on_macos do
     on_arm do
       url "https://github.com/sebastienrousseau/draft/releases/download/v#{version}/draft_#{version}_darwin_arm64.tar.gz"
-      sha256 "0a54c800b387c66d768d5bccdafd44bd83503a95aa40af008fd710a35fc568af"
+      sha256 "234dae21b7bda42df55f1aa55a3b1e4d87d14f94918217cd1dbe36ffcc186c08"
     end
     on_intel do
       url "https://github.com/sebastienrousseau/draft/releases/download/v#{version}/draft_#{version}_darwin_amd64.tar.gz"
-      sha256 "d35e52b316ffd87bf1cdbbf5357289f14680bffd6b56be71c8597467115716da"
+      sha256 "cd5814f731db24e21a2169ccab3dab789bf5b813e12f7ea0b762cd084852ae79"
     end
   end
 
   on_linux do
     on_arm do
       url "https://github.com/sebastienrousseau/draft/releases/download/v#{version}/draft_#{version}_linux_arm64.tar.gz"
-      sha256 "48363ecb2463fca6c9329879be26dc2f4026109a3523c36aef2d22620a5ac44f"
+      sha256 "de1b0d5c255f3c5828d5eb9289ecf5db4cb0becf15f5da4a364668fcb111b8da"
     end
     on_intel do
       url "https://github.com/sebastienrousseau/draft/releases/download/v#{version}/draft_#{version}_linux_amd64.tar.gz"
-      sha256 "3090d48ceb88699ad604c0de357b739184401ad92e6938db380e2db1b6565b11"
+      sha256 "609a524a8057073ed1b8e49ad5931b0a529077c77eb9068c6db3c4db0fa128f2"
     end
   end
 
