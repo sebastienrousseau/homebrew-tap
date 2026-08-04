@@ -38,7 +38,7 @@ jobs:
           git config user.signingkey "$HOME/.tap_signing_key"
           git config commit.gpgsign true
 
-      - name: Bump draft formula to the latest release
+      - name: Bump draft cask to the latest release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -47,11 +47,7 @@ jobs:
           tag="$(gh release view --repo "$repo" --json tagName -q .tagName)"
           ver="${tag#v}"
           cur="$(sed -n 's/.*version "\([^"]*\)".*/\1/p' Casks/draft.rb | head -1)"
-          if [ "$ver" = "$cur" ]; then
-            echo "Casks/draft.rb is already at $ver; nothing to do."
-            exit 0
-          fi
-          echo "Bumping draft: $cur -> $ver"
+          echo "Checking draft cask: $cur -> $ver"
           gh release download "$tag" --repo "$repo" --pattern checksums.txt --dir "$RUNNER_TEMP" --clobber
           sum() { awk -v f="draft_${ver}_$1.tar.gz" '$2==f{print $1}' "$RUNNER_TEMP/checksums.txt"; }
           DA="$(sum darwin_arm64)"
@@ -68,19 +64,28 @@ jobs:
           shas = {"darwin_arm64": os.environ["DA"], "darwin_amd64": os.environ["DI"],
                   "linux_arm64": os.environ["LA"], "linux_amd64": os.environ["LI"]}
           path = "Casks/draft.rb"
-          out, plat = [], None
-          for line in open(path):
-              m = re.search(r"_(darwin_arm64|darwin_amd64|linux_arm64|linux_amd64)\.tar\.gz", line)
-              if m:
-                  plat = m.group(1)
+          lines = open(path).readlines()
+          out = []
+          for index, line in enumerate(lines):
               if line.lstrip().startswith('version "'):
                   line = re.sub(r'version "[^"]*"', f'version "{ver}"', line)
-              elif line.lstrip().startswith("sha256 ") and plat:
-                  line = re.sub(r'sha256 "[^"]*"', f'sha256 "{shas[plat]}"', line)
-                  plat = None
+              elif line.lstrip().startswith("sha256 "):
+                  if index + 1 >= len(lines):
+                      raise SystemExit("sha256 line is missing its following URL")
+                  match = re.search(
+                      r"_(darwin_arm64|darwin_amd64|linux_arm64|linux_amd64)\.tar\.gz",
+                      lines[index + 1],
+                  )
+                  if not match:
+                      raise SystemExit("sha256 line is not followed by a platform URL")
+                  line = re.sub(r'sha256 "[^"]*"', f'sha256 "{shas[match.group(1)]}"', line)
               out.append(line)
           open(path, "w").writelines(out)
           PY
+          if git diff --quiet -- Casks/draft.rb; then
+            echo "Casks/draft.rb is already correct for $ver; nothing to do."
+            exit 0
+          fi
           branch="automation/draft-v${ver}"
           if gh pr list --head "$branch" --state open --json number --jq 'length > 0' | grep -q true; then
             echo "An updater pull request for $ver is already open."
