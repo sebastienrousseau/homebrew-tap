@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT OR Apache-2.0
 name: bump-draft
 
-# Keeps Casks/draft.rb in sync with the latest github.com/sebastienrousseau/draft
+# Keeps Formula/draft.rb in sync with the latest github.com/sebastienrousseau/draft
 # release. Polls daily (no cross-repo token needed); can also be run on demand or
 # triggered instantly by a repository_dispatch of type "draft-release".
 on:
@@ -38,7 +38,7 @@ jobs:
           git config user.signingkey "$HOME/.tap_signing_key"
           git config commit.gpgsign true
 
-      - name: Bump draft cask to the latest release
+      - name: Bump draft formula to the latest release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -46,8 +46,8 @@ jobs:
           repo="sebastienrousseau/draft"
           tag="$(gh release view --repo "$repo" --json tagName -q .tagName)"
           ver="${tag#v}"
-          cur="$(sed -n 's/.*version "\([^"]*\)".*/\1/p' Casks/draft.rb | head -1)"
-          echo "Checking draft cask: $cur -> $ver"
+          cur="$(sed -n 's/.*version "\([^"]*\)".*/\1/p' Formula/draft.rb | head -1)"
+          echo "Checking draft formula: $cur -> $ver"
           gh release download "$tag" --repo "$repo" --pattern checksums.txt --dir "$RUNNER_TEMP" --clobber
           sum() { awk -v f="draft_${ver}_$1.tar.gz" '$2==f{print $1}' "$RUNNER_TEMP/checksums.txt"; }
           DA="$(sum darwin_arm64)"
@@ -63,27 +63,26 @@ jobs:
           ver = os.environ["VER"]
           shas = {"darwin_arm64": os.environ["DA"], "darwin_amd64": os.environ["DI"],
                   "linux_arm64": os.environ["LA"], "linux_amd64": os.environ["LI"]}
-          path = "Casks/draft.rb"
+          path = "Formula/draft.rb"
           lines = open(path).readlines()
           out = []
           for index, line in enumerate(lines):
               if line.lstrip().startswith('version "'):
                   line = re.sub(r'version "[^"]*"', f'version "{ver}"', line)
               elif line.lstrip().startswith("sha256 "):
-                  if index + 1 >= len(lines):
-                      raise SystemExit("sha256 line is missing its following URL")
+                  adjacent = "".join(lines[max(0, index - 1):index] + lines[index + 1:index + 2])
                   match = re.search(
                       r"_(darwin_arm64|darwin_amd64|linux_arm64|linux_amd64)\.tar\.gz",
-                      lines[index + 1],
+                      adjacent,
                   )
                   if not match:
-                      raise SystemExit("sha256 line is not followed by a platform URL")
+                      raise SystemExit("sha256 line is not adjacent to a platform URL")
                   line = re.sub(r'sha256 "[^"]*"', f'sha256 "{shas[match.group(1)]}"', line)
               out.append(line)
           open(path, "w").writelines(out)
           PY
-          if git diff --quiet -- Casks/draft.rb; then
-            echo "Casks/draft.rb is already correct for $ver; nothing to do."
+          if git diff --quiet -- Formula/draft.rb; then
+            echo "Formula/draft.rb is already correct for $ver; nothing to do."
             exit 0
           fi
           branch="automation/draft-v${ver}"
@@ -96,5 +95,5 @@ jobs:
           git push --set-upstream origin "$branch"
           pr="$(gh pr create --base main --head "$branch" \
             --title "draft: bump to $ver" \
-            --body "Automated cask update for draft v$ver.")"
+            --body "Automated formula update for draft v$ver.")"
           gh pr merge "$pr" --squash --delete-branch
