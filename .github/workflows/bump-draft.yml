@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT OR Apache-2.0
 name: bump-draft
 
-# Keeps Formula/draft.rb in sync with the latest github.com/sebastienrousseau/draft
+# Keeps Casks/draft.rb in sync with the latest github.com/sebastienrousseau/draft
 # release. Polls daily (no cross-repo token needed); can also be run on demand or
 # triggered instantly by a repository_dispatch of type "draft-release".
 on:
@@ -14,19 +14,20 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   bump:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Configure signed commits
         env:
           SIGNING_KEY: ${{ secrets.TAP_SIGNING_SSH_KEY }}
         run: |
           if [ -z "$SIGNING_KEY" ]; then
-            echo "::error::TAP_SIGNING_SSH_KEY secret is not set — the bumper needs an SSH signing key so its commits verify. See Formula/draft.rb header."
+            echo "::error::TAP_SIGNING_SSH_KEY secret is not set; the bumper needs an SSH signing key so its commits verify."
             exit 1
           fi
           printf '%s\n' "$SIGNING_KEY" > "$HOME/.tap_signing_key"
@@ -45,15 +46,19 @@ jobs:
           repo="sebastienrousseau/draft"
           tag="$(gh release view --repo "$repo" --json tagName -q .tagName)"
           ver="${tag#v}"
-          cur="$(sed -n 's/.*version "\([^"]*\)".*/\1/p' Formula/draft.rb | head -1)"
+          cur="$(sed -n 's/.*version "\([^"]*\)".*/\1/p' Casks/draft.rb | head -1)"
           if [ "$ver" = "$cur" ]; then
-            echo "Formula/draft.rb is already at $ver — nothing to do."
+            echo "Casks/draft.rb is already at $ver; nothing to do."
             exit 0
           fi
           echo "Bumping draft: $cur -> $ver"
           gh release download "$tag" --repo "$repo" --pattern checksums.txt --dir "$RUNNER_TEMP" --clobber
           sum() { awk -v f="draft_${ver}_$1.tar.gz" '$2==f{print $1}' "$RUNNER_TEMP/checksums.txt"; }
-          export DA="$(sum darwin_arm64)" DI="$(sum darwin_amd64)" LA="$(sum linux_arm64)" LI="$(sum linux_amd64)"
+          DA="$(sum darwin_arm64)"
+          DI="$(sum darwin_amd64)"
+          LA="$(sum linux_arm64)"
+          LI="$(sum linux_amd64)"
+          export DA DI LA LI
           for v in "$DA" "$DI" "$LA" "$LI"; do
             [ -n "$v" ] || { echo "::error::missing a checksum for $ver"; exit 1; }
           done
@@ -62,7 +67,7 @@ jobs:
           ver = os.environ["VER"]
           shas = {"darwin_arm64": os.environ["DA"], "darwin_amd64": os.environ["DI"],
                   "linux_arm64": os.environ["LA"], "linux_amd64": os.environ["LI"]}
-          path = "Formula/draft.rb"
+          path = "Casks/draft.rb"
           out, plat = [], None
           for line in open(path):
               m = re.search(r"_(darwin_arm64|darwin_amd64|linux_arm64|linux_amd64)\.tar\.gz", line)
@@ -76,5 +81,15 @@ jobs:
               out.append(line)
           open(path, "w").writelines(out)
           PY
+          branch="automation/draft-v${ver}"
+          if gh pr list --head "$branch" --state open --json number --jq 'length > 0' | grep -q true; then
+            echo "An updater pull request for $ver is already open."
+            exit 0
+          fi
+          git switch -c "$branch"
           git commit -am "draft: bump to $ver"
-          git push
+          git push --set-upstream origin "$branch"
+          pr="$(gh pr create --base main --head "$branch" \
+            --title "draft: bump to $ver" \
+            --body "Automated cask update for draft v$ver.")"
+          gh pr merge "$pr" --squash --delete-branch
