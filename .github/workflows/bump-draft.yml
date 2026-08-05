@@ -69,13 +69,13 @@ jobs:
               if line.lstrip().startswith('version "'):
                   line = re.sub(r'version "[^"]*"', f'version "{ver}"', line)
               elif line.lstrip().startswith("sha256 "):
-                  adjacent = "".join(lines[max(0, index - 1):index] + lines[index + 1:index + 2])
+                  following = "".join(lines[index + 1:index + 4])
                   match = re.search(
                       r"_(universal\.pkg|linux_arm64\.tar\.gz|linux_amd64\.tar\.gz)",
-                      adjacent,
+                      following,
                   )
                   if not match:
-                      raise SystemExit("sha256 line is not adjacent to a platform URL")
+                      raise SystemExit("sha256 line is not followed by a platform URL")
                   line = re.sub(r'sha256 "[^"]*"', f'sha256 "{shas[match.group(1)]}"', line)
               out.append(line)
           open(path, "w").writelines(out)
