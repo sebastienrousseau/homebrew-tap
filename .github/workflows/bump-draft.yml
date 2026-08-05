@@ -49,20 +49,19 @@ jobs:
           cur="$(sed -n 's/.*version "\([^"]*\)".*/\1/p' Casks/draft.rb | head -1)"
           echo "Checking draft cask: $cur -> $ver"
           gh release download "$tag" --repo "$repo" --pattern checksums.txt --dir "$RUNNER_TEMP" --clobber
-          sum() { awk -v f="draft_${ver}_$1.tar.gz" '$2==f{print $1}' "$RUNNER_TEMP/checksums.txt"; }
-          DA="$(sum darwin_arm64)"
-          DI="$(sum darwin_amd64)"
-          LA="$(sum linux_arm64)"
-          LI="$(sum linux_amd64)"
-          export DA DI LA LI
-          for v in "$DA" "$DI" "$LA" "$LI"; do
+          sum() { awk -v f="draft_${ver}_$1" '$2==f{print $1}' "$RUNNER_TEMP/checksums.txt"; }
+          PKG="$(sum universal.pkg)"
+          LA="$(sum linux_arm64.tar.gz)"
+          LI="$(sum linux_amd64.tar.gz)"
+          export PKG LA LI
+          for v in "$PKG" "$LA" "$LI"; do
             [ -n "$v" ] || { echo "::error::missing a checksum for $ver"; exit 1; }
           done
           VER="$ver" python3 - <<'PY'
           import os, re
           ver = os.environ["VER"]
-          shas = {"darwin_arm64": os.environ["DA"], "darwin_amd64": os.environ["DI"],
-                  "linux_arm64": os.environ["LA"], "linux_amd64": os.environ["LI"]}
+          shas = {"universal.pkg": os.environ["PKG"], "linux_arm64.tar.gz": os.environ["LA"],
+                  "linux_amd64.tar.gz": os.environ["LI"]}
           path = "Casks/draft.rb"
           lines = open(path).readlines()
           out = []
@@ -72,7 +71,7 @@ jobs:
               elif line.lstrip().startswith("sha256 "):
                   adjacent = "".join(lines[max(0, index - 1):index] + lines[index + 1:index + 2])
                   match = re.search(
-                      r"_(darwin_arm64|darwin_amd64|linux_arm64|linux_amd64)\.tar\.gz",
+                      r"_(universal\.pkg|linux_arm64\.tar\.gz|linux_amd64\.tar\.gz)",
                       adjacent,
                   )
                   if not match:
