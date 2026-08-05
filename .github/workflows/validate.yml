@@ -37,6 +37,7 @@ jobs:
 
           while IFS= read -r formula; do
             [ -n "$formula" ] || continue
+            [ -f "$formula" ] || continue
             brew style "$formula"
             cp "$formula" "$tap/Formula/"
             name="$(basename "$formula" .rb)"
@@ -47,6 +48,7 @@ jobs:
 
           while IFS= read -r cask; do
             [ -n "$cask" ] || continue
+            [ -f "$cask" ] || continue
             brew style "$cask"
             cp "$cask" "$tap/Casks/"
             name="$(basename "$cask" .rb)"
