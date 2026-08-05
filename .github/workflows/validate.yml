@@ -1,0 +1,55 @@
+# SPDX-FileCopyrightText: 2026 Sebastien Rousseau
+# SPDX-License-Identifier: MIT OR Apache-2.0
+name: validate
+
+on:
+  pull_request:
+    paths:
+      - "Formula/**"
+      - "Casks/**"
+      - ".github/workflows/validate.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  homebrew:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Validate changed packages
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HOMEBREW_NO_AUTO_UPDATE: "1"
+        run: |
+          set -euo pipefail
+          brew tap-new sebastienrousseau/ci
+          tap="$(brew --repository sebastienrousseau/ci)"
+
+          if [ -n "$BASE_SHA" ] && git cat-file -e "$BASE_SHA^{commit}" 2>/dev/null; then
+            changed="$(git diff --name-only "$BASE_SHA" HEAD)"
+          else
+            changed="$(git ls-files Formula Casks)"
+          fi
+
+          while IFS= read -r formula; do
+            [ -n "$formula" ] || continue
+            brew style "$formula"
+            cp "$formula" "$tap/Formula/"
+            name="$(basename "$formula" .rb)"
+            brew audit --strict "sebastienrousseau/ci/$name"
+            brew install --build-from-source "sebastienrousseau/ci/$name"
+            brew test "sebastienrousseau/ci/$name"
+          done < <(printf '%s\n' "$changed" | grep '^Formula/.*\.rb$' || true)
+
+          while IFS= read -r cask; do
+            [ -n "$cask" ] || continue
+            brew style "$cask"
+            cp "$cask" "$tap/Casks/"
+            name="$(basename "$cask" .rb)"
+            brew audit --cask --strict "sebastienrousseau/ci/$name"
+            brew fetch --cask "sebastienrousseau/ci/$name"
+          done < <(printf '%s\n' "$changed" | grep '^Casks/.*\.rb$' || true)
