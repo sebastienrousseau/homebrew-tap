@@ -1,38 +1,32 @@
 # This file is maintained by .github/workflows/bump-draft.yml.
 cask "draft" do
-  version "0.0.31"
+  version "0.0.32"
 
   on_macos do
-    on_arm do
-      sha256 "5c4fa5021385d12b3dd8c155abe617744f42078a329e829f9f750499b115f3db"
-      url "https://github.com/sebastienrousseau/draft/releases/download/v#{version}/draft_#{version}_darwin_arm64.tar.gz"
-    end
-    on_intel do
-      sha256 "478af9053d8cbbaeeb534c98dffe83c1bb38bffbbdb83ca8b137ad4c659e9555"
-      url "https://github.com/sebastienrousseau/draft/releases/download/v#{version}/draft_#{version}_darwin_amd64.tar.gz"
-    end
+    sha256 "ac11af5e81f17e088ea2ab0672d24e84fd1c1c2844f416129d91e91ef4206733"
+
+    url "https://github.com/sebastienrousseau/draft/releases/download/v#{version}/draft_#{version}_universal.pkg"
+  end
+  on_macos do
+    pkg "draft_#{version}_universal.pkg"
+
+    uninstall pkgutil: "com.draftlib.draft"
   end
   on_linux do
     on_arm do
-      sha256 "7bd759e4c44ccff0dd021f2378dd6a0fa9e8f2147e8a00beebd4b97120aedc18"
+      sha256 "ebe6135fc60876688f31c6557ef303f829f8a781cc500cacbec2c0d3636f3081"
       url "https://github.com/sebastienrousseau/draft/releases/download/v#{version}/draft_#{version}_linux_arm64.tar.gz"
     end
     on_intel do
-      sha256 "43c2a72b724ac8f53b176ea8e1ce344c54e02290c751c22e26e8481d6c18f9a6"
+      sha256 "0677e64d586b128103737010f6f468e0ab1ab5e30840d21e96c29b43acf39fc7"
       url "https://github.com/sebastienrousseau/draft/releases/download/v#{version}/draft_#{version}_linux_amd64.tar.gz"
     end
+  end
+  on_linux do
+    binary "draft"
   end
 
   name "draft"
   desc "Turn research papers into grounded Markdown drafts"
   homepage "https://github.com/sebastienrousseau/draft"
-
-  binary "draft"
-
-  postflight do
-    if OS.mac?
-      system_command "/usr/bin/xattr",
-                     args: ["-dr", "com.apple.quarantine", "#{staged_path}/draft"]
-    end
-  end
 end
