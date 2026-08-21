@@ -29,6 +29,12 @@ jobs:
           brew tap-new sebastienrousseau/ci
           tap="$(brew --repository sebastienrousseau/ci)"
 
+          # `brew tap-new` creates Formula/ but not Casks/, so the cask
+          # loop below died on `cp "$cask" "$tap/Casks/"` under `set -e`
+          # before it ever reached `brew audit`. No cask change could
+          # pass this job.
+          mkdir -p "$tap/Formula" "$tap/Casks"
+
           if [ -n "$BASE_SHA" ] && git cat-file -e "$BASE_SHA^{commit}" 2>/dev/null; then
             changed="$(git diff --name-only "$BASE_SHA" HEAD)"
           else
