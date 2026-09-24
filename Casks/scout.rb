@@ -4,25 +4,25 @@ cask "scout" do
     run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "scout"], chdir: "."
   end
 
-  version "0.0.4"
+  version "0.0.5"
 
   on_macos do
     on_arm do
-      sha256 "984e410cc177dc12109bb8bc3092ba2ee8922e71f4a2c4ad20ac462a3d7cd823"
+      sha256 "de9ffafe24f39209c9abce746d36aeacd9c0f409fcfc6453c44d4a9eb7c28fcf"
       url "https://github.com/sebastienrousseau/scout/releases/download/v#{version}/scout_Darwin_arm64.tar.gz"
     end
     on_intel do
-      sha256 "b1d75a2bcf663c67da6c822ef2444a96cad8a7951ed52b3c62a8f30f27457295"
+      sha256 "d0dc427a9223502c9abafdac43b10a6ca55fe0cb98319f41328f77db14d59fd6"
       url "https://github.com/sebastienrousseau/scout/releases/download/v#{version}/scout_Darwin_x86_64.tar.gz"
     end
   end
   on_linux do
     on_arm do
-      sha256 "8061cf4a24656bf755d428f499bd71ba2c6efd0cf1bf7f4dbd8a0e0999626231"
+      sha256 "790b685d7ac75cb0fb95f65aac832405ee1a6b161c57462da675a20c4603c263"
       url "https://github.com/sebastienrousseau/scout/releases/download/v#{version}/scout_Linux_arm64.tar.gz"
     end
     on_intel do
-      sha256 "9602a05394c7a0f725abaa101ff7170be7aedb642139cdd66f1f09feaba166f2"
+      sha256 "5eb83087669ac6412c65198932a14b3ee001275ed4003c3cdf4d10761d1ad32a"
       url "https://github.com/sebastienrousseau/scout/releases/download/v#{version}/scout_Linux_x86_64.tar.gz"
     end
   end
