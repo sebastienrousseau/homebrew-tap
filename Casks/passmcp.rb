@@ -4,25 +4,25 @@ cask "passmcp" do
     run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "passmcp"], chdir: "."
   end
 
-  version "0.0.3"
+  version "0.0.4"
 
   on_macos do
     on_arm do
-      sha256 "ea317aad0e2ed27f580332e6209e80cfde66da6476eb7cd8ba9b974df799df40"
+      sha256 "b6eac8521d89d6ea3b015be3848f5cbe672ac8fffbbc275eb5a289c54a333415"
       url "https://github.com/sebastienrousseau/passmcp/releases/download/v#{version}/passmcp_Darwin_arm64.tar.gz"
     end
     on_intel do
-      sha256 "42dd2729c5fd42f9fb0c3a88c4f4a6ed279bf37b3b3093049c71a7cac39b0cf2"
+      sha256 "7a9a5f04c4c773272caabba9e0e413474892c14c54efa4f52c425aedae40e888"
       url "https://github.com/sebastienrousseau/passmcp/releases/download/v#{version}/passmcp_Darwin_x86_64.tar.gz"
     end
   end
   on_linux do
     on_arm do
-      sha256 "71ae581ebc02252c3d8df1e7b2f458ac78069c7ac5ae237014f3c880c7a4945a"
+      sha256 "42979f263c0eb976299e09d459742c3efe3b5e3bda24fcc54b118e62795efe8b"
       url "https://github.com/sebastienrousseau/passmcp/releases/download/v#{version}/passmcp_Linux_arm64.tar.gz"
     end
     on_intel do
-      sha256 "95a2b27aba6ead514ebf0a35a334451b8808cac0faa9791225e6ec0fd2ef2568"
+      sha256 "2384fec12887e9ed29417c9c84c02eee67feea0974307d4919dd1e766a6b2608"
       url "https://github.com/sebastienrousseau/passmcp/releases/download/v#{version}/passmcp_Linux_x86_64.tar.gz"
     end
   end
