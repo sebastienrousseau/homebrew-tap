@@ -1,9 +1,9 @@
 # This file is maintained by .github/workflows/bump-draft.yml.
 cask "draft" do
-  version "0.0.38"
+  version "0.0.39"
 
   on_macos do
-    sha256 "cb67e08d6679d0651be97078ebceffb008b65c0eac96aa77c3a6d52021f41e34"
+    sha256 "9ded910664a652048d3694b2b07c774b0e389bcd89e7d709ff4801169db1060b"
 
     url "https://github.com/sebastienrousseau/draft/releases/download/v#{version}/draft_#{version}_universal.pkg"
   end
@@ -14,11 +14,11 @@ cask "draft" do
   end
   on_linux do
     on_arm do
-      sha256 "f23834867da94e90ea89af91274b685cf261d1e5ce8ffee12d42b73168b8f685"
+      sha256 "70c078f5329551da797648bf78565321a6ec96d6c6a9203581623ae3d3152a65"
       url "https://github.com/sebastienrousseau/draft/releases/download/v#{version}/draft_#{version}_linux_arm64.tar.gz"
     end
     on_intel do
-      sha256 "f848a1bf15c3554274d99ddad374647678a45e3e09571e3bed61b8e968e3fbca"
+      sha256 "cf304fbc660a24dd215107abd7c494c9d1394e6f56dbe283061c4064612d03fc"
       url "https://github.com/sebastienrousseau/draft/releases/download/v#{version}/draft_#{version}_linux_amd64.tar.gz"
     end
   end
