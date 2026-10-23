@@ -14,7 +14,7 @@ class Stratos < Formula
   desc "Official command-line client for CloudCDN"
   homepage "https://github.com/sebastienrousseau/stratos"
   version "0.0.22"
-  license "MIT"
+  license any_of: ["Apache-2.0", "MIT"]
 
   on_macos do
     on_arm do
@@ -39,13 +39,9 @@ class Stratos < Formula
   end
 
   def install
-    binary_name = case [OS.kernel_name, Hardware::CPU.arch].join("-")
-                  when "Darwin-arm64" then "stratos-darwin-arm64"
-                  when "Darwin-x86_64" then "stratos-darwin-x64"
-                  when "Linux-arm64" then "stratos-linux-arm64"
-                  when "Linux-x86_64" then "stratos-linux-x64"
-                  end
-    bin.install binary_name => "stratos"
+    os = OS.mac? ? "darwin" : "linux"
+    arch = Hardware::CPU.arm? ? "arm64" : "x64"
+    bin.install "stratos-#{os}-#{arch}" => "stratos"
   end
 
   test do
