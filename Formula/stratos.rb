@@ -13,7 +13,6 @@
 class Stratos < Formula
   desc "Official command-line client for CloudCDN"
   homepage "https://github.com/sebastienrousseau/stratos"
-  version "0.0.22"
   license any_of: ["Apache-2.0", "MIT"]
 
   on_macos do
