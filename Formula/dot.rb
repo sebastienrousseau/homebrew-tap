@@ -14,8 +14,8 @@
 class Dot < Formula
   desc "Declarative dotfiles CLI for macOS, Linux, WSL, and PowerShell"
   homepage "https://github.com/sebastienrousseau/dotfiles"
-  url "https://github.com/sebastienrousseau/dotfiles/releases/download/v0.2.522/dot-0.2.522.tar.gz"
-  sha256 "b7ccd835aefc5eba6913a61ad0e670c6ffbf5ad3d5f7c3e2a9e4a045c88e777e"
+  url "https://github.com/sebastienrousseau/dotfiles/releases/download/v0.2.538/dot-0.2.538.tar.gz"
+  sha256 "8b911316fc538cb62e4670c8c00442dc47465803810fd01d22122e55f8a50dc7"
   license "MIT"
 
   depends_on "bash" => :build
@@ -30,7 +30,7 @@ class Dot < Formula
     bin.install "bin/dot"
     bin.install Dir["bin/dot-*"]
     lib.install Dir["lib/*"]
-    man1.install "share/man/man1/dot.1"
+    man1.install Dir["share/man/man1/dot*.1"]
     zsh_completion.install "share/zsh/site-functions/_dot"
     bash_completion.install "share/bash-completion/completions/dot"
     fish_completion.install "share/fish/vendor_completions.d/dot.fish"
