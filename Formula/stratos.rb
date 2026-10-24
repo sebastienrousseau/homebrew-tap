@@ -13,42 +13,37 @@
 class Stratos < Formula
   desc "Official command-line client for CloudCDN"
   homepage "https://github.com/sebastienrousseau/stratos"
-  version "0.0.22"
-  license "MIT"
+  license any_of: ["Apache-2.0", "MIT"]
 
   on_macos do
     on_arm do
-      url "https://github.com/sebastienrousseau/stratos/releases/download/v0.0.22/stratos-darwin-arm64"
-      sha256 "346e977753e8f9bbddb35c881a5a2f51a38a5bee2104661fe82af9cd660c5791"
+      url "https://github.com/sebastienrousseau/stratos/releases/download/v0.0.23/stratos-darwin-arm64"
+      sha256 "38985bf06e5bb50afae27fc740261bd7af2117809bd4dc8e1f6ad47dbb99d79f"
     end
     on_intel do
-      url "https://github.com/sebastienrousseau/stratos/releases/download/v0.0.22/stratos-darwin-x64"
-      sha256 "f2ebb08cac356d45b7456ad5fac963049894e6c596897a7e70162b033ea4e292"
+      url "https://github.com/sebastienrousseau/stratos/releases/download/v0.0.23/stratos-darwin-x64"
+      sha256 "4a2c806119234dbd25e62a559ca1749e42431cfc021bf14994cb3762dcd2208b"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/sebastienrousseau/stratos/releases/download/v0.0.22/stratos-linux-arm64"
-      sha256 "a7073f96fcbe79eee2bcabddd4b3bf18ad577a7ecd5e17c0572904f6f91acc1e"
+      url "https://github.com/sebastienrousseau/stratos/releases/download/v0.0.23/stratos-linux-arm64"
+      sha256 "ca3c8b1dcc4786d0a0770d677dc2a175626ea8fe87ac2aef8a9f623168be1123"
     end
     on_intel do
-      url "https://github.com/sebastienrousseau/stratos/releases/download/v0.0.22/stratos-linux-x64"
-      sha256 "eddd551c44284f712b9109db34d328f8723a2da652a8911213e6a597219ac840"
+      url "https://github.com/sebastienrousseau/stratos/releases/download/v0.0.23/stratos-linux-x64"
+      sha256 "d56bd45f5377235e441badb989c72a46c21b91cb93bb30db473d6fc270cc3762"
     end
   end
 
   def install
-    binary_name = case [OS.kernel_name, Hardware::CPU.arch].join("-")
-                  when "Darwin-arm64" then "stratos-darwin-arm64"
-                  when "Darwin-x86_64" then "stratos-darwin-x64"
-                  when "Linux-arm64" then "stratos-linux-arm64"
-                  when "Linux-x86_64" then "stratos-linux-x64"
-                  end
-    bin.install binary_name => "stratos"
+    os = OS.mac? ? "darwin" : "linux"
+    arch = Hardware::CPU.arm? ? "arm64" : "x64"
+    bin.install "stratos-#{os}-#{arch}" => "stratos"
   end
 
   test do
-    assert_match "stratos v0.0.22", shell_output("#{bin}/stratos version")
+    assert_match "stratos v0.0.23", shell_output("#{bin}/stratos version")
   end
 end
