@@ -14,8 +14,8 @@
 class Dot < Formula
   desc "Declarative dotfiles CLI for macOS, Linux, WSL, and PowerShell"
   homepage "https://github.com/sebastienrousseau/dotfiles"
-  url "https://github.com/sebastienrousseau/dotfiles/releases/download/v0.2.538/dot-0.2.538.tar.gz"
-  sha256 "8b911316fc538cb62e4670c8c00442dc47465803810fd01d22122e55f8a50dc7"
+  url "https://github.com/sebastienrousseau/dotfiles/releases/download/v0.2.539/dot-0.2.539.tar.gz"
+  sha256 "c07268a9d9abbe21898b5cfe94398b1385dc3ea5cb578631100abd6d2bddadba"
   license "MIT"
 
   depends_on "bash" => :build
@@ -26,17 +26,29 @@ class Dot < Formula
   depends_on "jq"       => :recommended
   depends_on "starship" => :recommended
 
+  # The archive's own `make install` places the whole tree the CLI reads
+  # at run time (scripts, plugins, defaults) under libexec, and links
+  # bin/dot to it; installing bin and lib alone left every command but
+  # `dot version` unknown.
   def install
-    bin.install "bin/dot"
-    bin.install Dir["bin/dot-*"]
-    lib.install Dir["lib/*"]
-    man1.install Dir["share/man/man1/dot*.1"]
-    zsh_completion.install "share/zsh/site-functions/_dot"
-    bash_completion.install "share/bash-completion/completions/dot"
-    fish_completion.install "share/fish/vendor_completions.d/dot.fish"
+    system "make", "install",
+           "PREFIX=#{prefix}",
+           "LIBEXECDIR=#{libexec}",
+           "DOT_LINK=../libexec/bin/dot",
+           "MANDIR=#{man}",
+           "DOCDIR=#{doc}",
+           "BASHCOMPDIR=#{bash_completion}",
+           "ZSHCOMPDIR=#{zsh_completion}",
+           "FISHCOMPDIR=#{fish_completion}"
   end
 
   test do
     assert_match version.to_s, shell_output("#{bin}/dot version")
+    # A bundled plugin's entry reads its defaults, so this fails on an
+    # install that left out plugins/ or defaults/.
+    ENV["HOME"] = testpath.to_s
+    ENV["DOTFILES_NONINTERACTIVE"] = "1"
+    ENV["NO_COLOR"] = "1"
+    shell_output("#{bin}/dot fleet policy show")
   end
 end
