@@ -27,6 +27,10 @@ jobs:
         run: |
           set -euo pipefail
           brew tap-new sebastienrousseau/ci
+          # Homebrew 6 refuses to load a formula or cask from a tap nobody
+          # trusted ("Refusing to load formula ... from untrusted tap").
+          # This tap is the throwaway one created on the line above.
+          brew trust sebastienrousseau/ci
           tap="$(brew --repository sebastienrousseau/ci)"
 
           # `brew tap-new` creates Formula/ but not Casks/, so the cask
