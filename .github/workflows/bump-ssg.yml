@@ -1,0 +1,77 @@
+# SPDX-FileCopyrightText: 2026 Sebastien Rousseau
+# SPDX-License-Identifier: MIT OR Apache-2.0
+name: bump-ssg
+
+# Keeps Formula/ssg.rb in sync with the latest
+# github.com/sebastienrousseau/static-site-generator release. Each release
+# attaches the formula it rendered from its own checksums as ssg.rb, so
+# this copies that file rather than editing hashes here. Polls daily (no
+# cross-repo token needed); can also be run on demand or triggered
+# instantly by a repository_dispatch of type "ssg-release".
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+  repository_dispatch:
+    types: [ssg-release]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Configure signed commits
+        env:
+          SIGNING_KEY: ${{ secrets.TAP_SIGNING_SSH_KEY }}
+        run: |
+          if [ -z "$SIGNING_KEY" ]; then
+            echo "::error::TAP_SIGNING_SSH_KEY secret is not set; the bumper needs an SSH signing key so its commits verify."
+            exit 1
+          fi
+          printf '%s\n' "$SIGNING_KEY" > "$HOME/.tap_signing_key"
+          chmod 600 "$HOME/.tap_signing_key"
+          git config user.name "Sebastien Rousseau"
+          git config user.email "sebastian.rousseau@gmail.com"
+          git config gpg.format ssh
+          git config user.signingkey "$HOME/.tap_signing_key"
+          git config commit.gpgsign true
+
+      - name: Copy the ssg formula from the latest release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          repo="sebastienrousseau/static-site-generator"
+          tag="$(gh release view --repo "$repo" --json tagName -q .tagName)"
+          ver="${tag#v}"
+          echo "Checking ssg formula against $tag"
+          gh release download "$tag" --repo "$repo" --pattern ssg.rb --dir "$RUNNER_TEMP" --clobber
+          # The release renders the formula; refuse one that does not
+          # name this release's archives or still has a placeholder.
+          if ! grep -q "/download/$tag/ssg-$tag-" "$RUNNER_TEMP/ssg.rb" \
+            || grep -q '@[A-Z0-9_]*@' "$RUNNER_TEMP/ssg.rb"; then
+            echo "::error::ssg.rb attached to $tag is not a rendered formula for $tag"
+            exit 1
+          fi
+          cp "$RUNNER_TEMP/ssg.rb" Formula/ssg.rb
+          if git diff --quiet -- Formula/ssg.rb; then
+            echo "Formula/ssg.rb is already correct for $ver; nothing to do."
+            exit 0
+          fi
+          branch="automation/ssg-v${ver}"
+          if gh pr list --head "$branch" --state open --json number --jq 'length > 0' | grep -q true; then
+            echo "An updater pull request for $ver is already open."
+            exit 0
+          fi
+          git switch -c "$branch"
+          git commit -am "ssg: bump to $ver"
+          git push --set-upstream origin "$branch"
+          pr="$(gh pr create --base main --head "$branch" \
+            --title "ssg: bump to $ver" \
+            --body "Automated formula update for ssg v$ver.")"
+          gh pr merge "$pr" --squash --delete-branch
