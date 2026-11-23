@@ -1,25 +1,25 @@
 # Kept current by .github/workflows/bump-askiso.yml from the latest
 # github.com/sebastienrousseau/askiso release.
 cask "askiso" do
-  version "0.0.6"
+  version "0.0.8"
 
   on_macos do
     on_arm do
-      sha256 "7e79013810a1dde3e51daa55455ee5afeec8bcf2f30cac5b0fb22387ef8984b5"
+      sha256 "799bbecbe9d5de8b41a282d127095ca209e11f3cf695136b96254d225eb355c6"
       url "https://github.com/sebastienrousseau/askiso/releases/download/v#{version}/askiso_#{version}_darwin_arm64.tar.gz"
     end
     on_intel do
-      sha256 "81a3bef6abe66540c0e7d7e8ba73dc106930c83f6c9255db888bf26b678d19d6"
+      sha256 "254a7cc919761bf120ca0dd52bdf818ea5b755901ef8fe7d90bc50d4dd293c46"
       url "https://github.com/sebastienrousseau/askiso/releases/download/v#{version}/askiso_#{version}_darwin_amd64.tar.gz"
     end
   end
   on_linux do
     on_arm do
-      sha256 "fe774359c5607287211dcdbcb85e63d3fb770611b3a951fa181fa21910b98776"
+      sha256 "18d2a73c4e2c2d048b3b65a253b7c99a1a263d991744d879d4b1e4ee9b88fa4f"
       url "https://github.com/sebastienrousseau/askiso/releases/download/v#{version}/askiso_#{version}_linux_arm64.tar.gz"
     end
     on_intel do
-      sha256 "6c5324aedb42734297cde9085ed34eac0ca7a3082c7c8e1f08679c000d0f7f8b"
+      sha256 "97dce5b4d4449edf0909f68ff93e051877d9f01d1e98415810fdf393455f63f9"
       url "https://github.com/sebastienrousseau/askiso/releases/download/v#{version}/askiso_#{version}_linux_amd64.tar.gz"
     end
   end
