@@ -38,15 +38,6 @@ cask "askiso" do
   binary "askiso-lsp"
   binary "askiso-server"
 
-  # The binaries are not notarised. Without this, macOS quarantines them on
-  # download and Gatekeeper refuses to run them.
-  postflight do
-    if OS.mac?
-      system_command "/usr/bin/xattr",
-                     args: ["-dr", "com.apple.quarantine", staged_path]
-    end
-  end
-
   caveats <<~EOS
     AskISO ships no ISO 20022 specification content. Download the message sets
     you need from https://www.iso20022.org/ then run:
