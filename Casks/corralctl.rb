@@ -24,7 +24,7 @@ cask "corralctl" do
   end
 
   name "corralctl"
-  desc "Clone and organise repositories from GitHub, GitLab, Gitea, Forgejo, Codeberg and Bitbucket by visibility and language, then let your AI coding agent search across all of them at once, straight from disk."
+  desc "Clone and organise Git repositories for AI coding agents to search"
   homepage "https://github.com/sebastienrousseau/corralctl"
 
   livecheck do
