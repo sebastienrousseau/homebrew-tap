@@ -14,8 +14,8 @@
 class Dot < Formula
   desc "Declarative dotfiles CLI for macOS, Linux, WSL, and PowerShell"
   homepage "https://github.com/sebastienrousseau/dotfiles"
-  url "https://github.com/sebastienrousseau/dotfiles/releases/download/v0.2.553/dot-0.2.553.tar.gz"
-  sha256 "8dfd5cec68183f479587359a3d3afd97fbcb5cb3ec3c12dc6c5f73e405808b9f"
+  url "https://github.com/sebastienrousseau/dotfiles/releases/download/v0.2.554/dot-0.2.554.tar.gz"
+  sha256 "256afc964ecf9074feb266115a3179bfb3be5a6db064765601eb9b1f0bb3edba"
   license "MIT"
 
   depends_on "bash" => :build
