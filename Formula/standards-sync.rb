@@ -3,8 +3,8 @@ class StandardsSync < Formula
 
   desc "Keep the code standards in sync without losing edits"
   homepage "https://github.com/sebastienrousseau/standards"
-  url "https://github.com/sebastienrousseau/standards/releases/download/v0.0.13/standards-sync-0.0.13-unix.tar.gz"
-  sha256 "89704622e94a0ed356e0eb365beee675679f8587f782fcc95320ca655b509f61"
+  url "https://github.com/sebastienrousseau/standards/releases/download/v0.0.14/standards-sync-0.0.14-unix.tar.gz"
+  sha256 "587256c9b66c09b2aa568285927db1a95ceb71aa0454f6ce8e8c8c6cabfbc4f9"
   license any_of: ["Apache-2.0", "MIT"]
 
   depends_on "python@3.15"
